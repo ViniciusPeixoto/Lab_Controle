@@ -1,4 +1,7 @@
 #define tam 8  //Tamanho do barramento do contador
+/*
+ * Intervalo da interrupção no sistema, em microssegundos
+ */
 #define intervalo 1000000
 
 /*
@@ -6,9 +9,7 @@
  */
 #include <TimerOne.h>
 
-/*
- * Intervalo da interrupção no sistema, em microssegundos
- */
+
 /*
  * Valor que vem do contador de 8 bits
  * Intervalo de 0 a 255
@@ -27,8 +28,6 @@ int valores[8];
 double oldPosicao = 0;
 double newPosicao = 0;
 double velocidade = 0;
-
-double atualPos = 0;
 /*
  * Configuração inicial do Arduino
  */
@@ -62,15 +61,11 @@ void setup()
  */
 void leEncoder()
 {
-  Serial.println("chamou");
-  contagem = binToInt();        //Converte os valores que vêm do contador em um valor inteiro (PARTE QUE O GUSTAVO ESTÁ FAZENDO)
+
+  contagem = binToInt();        //Converte os valores que vêm do contador em um valor inteiro
   getPosicao();                 //Obtem a posição do robô a partir da contagem do contador
   getVelocidade();              //Obtem a velocidade a partir da nova posição do robô
 
-  Serial.print("Posicao: ");
-  Serial.println(newPosicao);
-  Serial.print("Velocidade: ");
-  Serial.println(velocidade);
 }
 
 int binToInt()
@@ -83,10 +78,10 @@ int binToInt()
     // Variável que recebe o valor lido no pino
     recebe = digitalRead(pinos[pos]);
 
-    // Só armazena os valores lidos (0 ou 1) para se preciso utilizar no futuro
-    //valores[pos] = recebe;
-
-    // Calcula o shift do valor, assim evita de fazer potências e fica mais eficiente, por conta dos valores lidos serem só 0 ou 1
+    /* Calcula o shift do valor, assim evita de fazer
+     * potências e fica mais eficiente, por conta dos
+     * valores lidos serem só 0 ou 1
+     */
     recebe = recebe << pos;
 
     // Coloca em uma soma parcial;
@@ -137,9 +132,9 @@ void getVelocidade ()
   /*
    * A velocidade do motor é definida pela diferença de posição no tempo entre chamadas de interrupção
    * Uma velocidade negativa indica que o motor está descendo
-   * mm/us
+   * Unidade: mm/s
    */
-  velocidade = (newPosicao - oldPosicao)/intervalo;
+  velocidade = (newPosicao - oldPosicao)*1000000/intervalo;
 
 }
 
