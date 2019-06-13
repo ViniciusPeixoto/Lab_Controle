@@ -28,6 +28,14 @@ int valores[8];
 double oldPosicao = 0;
 double newPosicao = 0;
 double velocidade = 0;
+ 
+ /*
+ * Variáveis de sentido
+ */
+ int sentidoA = 0;
+ int sentidoH = 1;
+ int multiplicadoSentido = 1;
+  
 /*
  * Configuração inicial do Arduino
  */
@@ -106,6 +114,22 @@ void getPosicao ()
   }
 
   oldContagem = contagem;
+
+  /*
+   *  Verifica o sentido do giro do encoder 
+   */
+  if(sentidoH == HIGH && sentidoA == LOW)
+  {
+    multiplicadorSentido = 1;
+  }
+  else
+  {
+    if(sentidoH == LOW && sentidoA == HIGH)
+    {
+      multiplicadorSentido = -1;
+    }
+  }
+  deltaContagem *= multiplicadorSentido;
 /*
  * Necessário as especificações do encoder e do roscamento em que o robô irá se deslocar
  * Isso irá definir sua posição vertical através do tempo
